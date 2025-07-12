@@ -1,0 +1,35 @@
+<?php
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Models\City;
+use App\Models\Province;
+use App\Http\Controllers\CompanyProfileController;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
+*/
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+// Route untuk mendapatkan kota berdasarkan provinsi
+Route::get('/cities/{province}', function ($province) {
+    return City::where('province_id', $province)->orderBy('name')->get();
+});
+
+// Tambahkan route berikut jika belum ada
+Route::middleware('auth')->group(function () {
+    Route::get('/company-profile', [CompanyProfileController::class, 'index'])->name('company.profile.index');
+    Route::get('/company-profile/create', [CompanyProfileController::class, 'create'])->name('company.profile.create');
+    Route::post('/company-profile', [CompanyProfileController::class, 'store'])->name('company.profile.store');
+    Route::get('/company-profile/{profile}/edit', [CompanyProfileController::class, 'edit'])->name('company.profile.edit');
+    Route::put('/company-profile/{profile}', [CompanyProfileController::class, 'update'])->name('company.profile.update');
+});
